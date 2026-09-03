@@ -1,0 +1,73 @@
+# LAMMPS script for calculating thermal expansion coefficient
+
+units           metal
+atom_style      atomic
+boundary        p p p
+
+# Read initial structure
+read_data       lmp.La_con333.conf
+
+# Define interatomic potential (example: EAM potential for aluminum)
+# DPMD trained data
+pair_style      deepmd graph_LNSEGY_revised.pb
+pair_coeff      * *
+
+
+# Define variables
+variable        Tstart equal 100.0   # starting temperature in K
+variable        Tstop equal 1600.0   # ending temperature in K
+variable        Tstep equal 20.0    # temperature step in K
+variable        p equal 0.0          # pressure in atm
+variable        dt equal 0.001       # time step in ps
+
+# Define output files
+variable        logfile string log.thermal_expansion
+variable        datafile string data.thermal_expansion
+
+# Create a log file
+log             ${logfile}
+
+# Initialize velocities and set temperature
+velocity        all create ${Tstart} 12345 mom yes rot yes dist gaussian
+
+# Fix for NPT ensemble
+fix             1 all npt temp ${Tstart} ${Tstart} 0.1 iso ${p} ${p} 1.0
+
+# Equilibrate at starting temperature
+thermo          100
+thermo_style    custom step temp press vol lx ly lz
+run             20000
+unfix           1
+
+# Loop over temperature range
+variable        t loop $(ceil((v_Tstop-v_Tstart)/v_Tstep)+1)
+label           loop
+variable        T equal ${Tstart}+(v_t-1)*${Tstep}
+variable        Tprev equal ${Tstart}+(v_t-2)*${Tstep}
+
+# If not the first loop, warm up from previous temperature
+if "${t} > 1" then "fix 1 all npt temp ${Tprev} ${T} 0.1 iso ${p} ${p} 1.0"
+if "${t} > 1" then "run 2000"
+if "${t} > 1" then "unfix 1"
+
+# Set target temperature to current temperature
+fix             2 all npt temp ${T} ${T} 0.1 iso ${p} ${p} 1.0
+
+# Run simulation and average volume over last 2000 steps
+thermo          100
+thermo_style    custom step temp press vol
+variable        vol equal vol
+fix             3 all ave/time 10 200 2000 v_vol ave running
+run             8000
+
+# Print average volume and temperature
+variable        avg_vol equal f_3
+print           "${T} ${avg_vol}" append ${datafile}
+
+unfix           2
+unfix           3
+
+next            t
+jump            SELF loop
+
+# End of script

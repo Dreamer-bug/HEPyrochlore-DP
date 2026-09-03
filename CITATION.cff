@@ -1,0 +1,48 @@
+cff-version: 1.2.0
+message: >-
+  If you use this dataset or model, please cite the submitted manuscript and
+  this repository. Update this record with the article DOI after publication.
+title: >-
+  Data and Deep Potential model for predicting thermal and physical properties
+  of high-entropy pyrochlores
+type: dataset
+authors:
+  - given-names: Yuxuan
+    family-names: Wang
+    email: yuxuan.wang3@mail.mcgill.ca
+    affiliation: McGill University
+  - given-names: Huicong
+    family-names: Chen
+    affiliation: McGill University
+  - given-names: Guoqiang
+    family-names: Lan
+    affiliation: McGill University
+  - given-names: Jun
+    family-names: Song
+    email: jun.song2@mcgill.ca
+    affiliation: McGill University
+version: 1.0.0
+repository-code: https://github.com/Dreamer-bug/HEPyrochlore-DP
+url: https://github.com/Dreamer-bug/HEPyrochlore-DP
+keywords:
+  - deep-learning potential
+  - DeepMD-kit
+  - high-entropy pyrochlore
+  - thermal barrier coating
+  - thermal expansion
+  - thermal conductivity
+preferred-citation:
+  type: article
+  title: >-
+    A Deep-learning Potential for Predicting Thermal and Physical Properties of
+    High-entropy Pyrochlores
+  authors:
+    - given-names: Yuxuan
+      family-names: Wang
+    - given-names: Huicong
+      family-names: Chen
+    - given-names: Guoqiang
+      family-names: Lan
+    - given-names: Jun
+      family-names: Song
+  journal: Computational Materials Science

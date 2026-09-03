@@ -1,0 +1,21 @@
+# ---------- Initialization ----------
+units           metal
+dimension       3
+boundary        p p p
+atom_style      atomic
+
+# ---------- Read structure ----------
+# 用变量 DATA 传入 supercell 文件名
+read_data       ${DATA}
+
+# 如果用 deepmd，就用下面两行：
+pair_style      deepmd graph_LNSEGY_revised.pb
+pair_coeff      * *
+
+# ---------- Dump forces for phonopy ----------
+# 用变量 OUT 指定输出文件名
+dump            phonopy all custom 1 ${OUT} id type x y z fx fy fz
+dump_modify     phonopy format line %d %d %15.8f %15.8f %15.8f %15.8f %15.8f %15.8f
+
+# 只做能量力计算，不走时间积分
+run             0

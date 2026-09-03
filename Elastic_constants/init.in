@@ -1,0 +1,32 @@
+# Define the finite deformation size. 
+variable up equal 2.0e-2
+ 
+# units
+units		metal
+variable cfac equal 1.0e-4
+
+# Define MD parameters
+variable nevery equal 10                  # sampling interval
+variable nrepeat equal 10                 # number of samples
+variable nfreq equal ${nevery}*${nrepeat} # length of one average
+variable nthermo equal ${nfreq}           # interval for thermo output
+variable nequil equal 100*${nthermo}      # length of equilibration run
+variable nrun equal 30*${nthermo}         # length of equilibrated run
+variable temp equal 300.0                 # temperature of initial sample
+variable timestep equal 0.001             # timestep
+variable adiabatic equal 0                # adiabatic (1) or isothermal (2)
+variable tdamp equal 0.01                 # time constant for thermostat
+variable seed equal 123457                # seed for thermostat
+
+# generate the box and atom positions using a diamond lattice
+
+boundary	p p p
+
+# read data
+atom_style	atomic
+boundary	p p p
+read_data	lmp.La_con333.conf
+
+velocity	all create ${temp} 87287
+
+
